@@ -2,6 +2,7 @@
 # (c) 2025 Yoichi Tanibayashi
 #
 """CLI base"""
+
 import os
 import readline
 

@@ -23,13 +23,13 @@ dependencies = [
 ]
 
 [build-system]
-requires = ["hatchling", hatch-vcs"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [tool.hatch.version]
 source = "vcs"
 
-[project.script]
+[project.scripts]
 pi0ir = "pi0ir.__main__:cli"
 
 [dependency-groups]

@@ -2,14 +2,16 @@
 # (c) 2025 Yoichi Tanibayashi
 #
 """__main__.py"""
-import os
 
 import click
 import pigpio
 
-form . import __version__
+from . import __version__
+from .cmd_iranalyze import CmdIrAnalyze
 from .utils.clickutils import click_common_opts
 from .utils.mylogger import errmsg, get_logger
+
+DEF_PIN = 24
 
 
 def get_pi(debug=False) -> pigpio.pi:
@@ -48,20 +50,38 @@ def cli(ctx, debug):
         click.echo(ctx.get_help())
 
 
-cli.command()
-@click.argument("pin", type=int, nargs=1)
+@cli.command()
+@click.option(
+    "--pin",
+    "-p",
+    type=int,
+    default=DEF_PIN,
+    show_default=True,
+    help="GPIO pin number",
+)
+@click.option(
+    "--verbose",
+    "-v",
+    is_flag=True,
+    default=False,
+    help="verbose mode",
+)
 @click_common_opts(__version__)
-def analyze(ctx, pin, debug):
+def analyze(ctx, pin, verbose, debug):
     """Ir Analyze."""
     __log = get_logger(__name__, debug)
     __log.debug("cmd_name=%s", ctx.command.name)
-    __log.debug("pin=%s", pin)
+    __log.debug("pin=%s, verbose=%s", pin, verbose)
 
     pi = None
     app = None
     try:
-        print(pi)
-        print(app)
+        pi = get_pi(debug)
+        print("AAA")
+        app = CmdIrAnalyze(pin, verbose=verbose, debug=debug)
+        print("BBB")
+        app.main()
+        print("CCC")
 
     except Exception as _e:
         __log.error(errmsg(_e))

@@ -7,7 +7,7 @@ __version__ = "_._._"
 if __package__:
     __version__ = get_version(__package__)
 
-from .utils.clibase import CliBase, CliWithHistory, ScriptRunner, OneKeyCli
+from .utils.clibase import CliBase, CliWithHistory, OneKeyCli, ScriptRunner
 from .utils.clickutils import click_common_opts
 from .utils.mylogger import errmsg, get_logger
 
