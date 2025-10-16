@@ -33,11 +33,11 @@ class CmdIrAnalyze:
             self.pi, self.pin, verbose=self.verbose, debug=self._dbg
         )
 
+        self.serial_num = 0
+
         self.msgq = queue.Queue()
         self.th_worker = threading.Thread(target=self.worker)
         self.th_worker.start()
-
-        self.serial_num = 0
 
     def worker(self):
         """
