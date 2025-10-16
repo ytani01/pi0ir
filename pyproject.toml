@@ -1,0 +1,49 @@
+[project]
+name = "pi0ir"
+dynamic = ["version"]
+description = "Python library for IR signal"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Yoichi Tanibayashi", email = "yoichi@tanibayashi.jp" }
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: System :: Hardware",
+    "Topic :: System :: Hardware :: Hardware Drivers",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "blessed>=1.22.0",
+    "click>=8.3.0",
+    "pigpio>=1.78",
+]
+
+[build-system]
+requires = ["hatchling", hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[project.script]
+pi0ir = "pi0ir.__main__:cli"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.18.2",
+    "pytest>=8.4.2",
+    "ruff>=0.14.0",
+]
+
+[tool.ruff.format]
+docstring-code-line-length = 78
+
+[tool.ruff.lint.per-file-ignores]
+"conftest.py" = ["F401", "F811"]
+
+[tool.pytest.ini_options]
+pythonpath = "tests"
