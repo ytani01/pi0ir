@@ -18,18 +18,19 @@ class CmdIrAnalyze:
 
     MSG_END = ""
 
-    def __init__(self, pin, n=0, verbose=False, debug=False):
+    def __init__(self, pi, pin, n=0, verbose=False, debug=False):
         self._dbg = debug
         self._log = get_logger(__class__.__name__, debug)
         self._log.debug("pin=%d, n=%d, verbose=%s", pin, n, verbose)
 
+        self.pi = pi
         self.pin = pin
         self.n = n
         self.verbose = verbose
 
         self.analyzer = IrAnalyze(debug=self._dbg)
         self.receiver = IrRecv(
-            self.pin, verbose=self.verbose, debug=self._dbg
+            self.pi, self.pin, verbose=self.verbose, debug=self._dbg
         )
 
         self.msgq = queue.Queue()

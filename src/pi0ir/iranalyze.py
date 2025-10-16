@@ -6,7 +6,6 @@
 
 import json
 
-from .irconfig import IrConfig
 from .utils.mylogger import get_logger
 
 
@@ -30,12 +29,13 @@ class IrAnalyze:
         "unknown": "?",
     }
     SIG_STR_01 = SIG_SYM["zero"] + SIG_SYM["one"]
+    HEADER_BIN = "(0b)"
 
     def __init__(self, raw_data=[], debug=False):
         """
         Parameters
         ----------
-        raw_data: list
+        raw_data: list  # TBD: 不要？
           [[pulse1, space1], [pulse2, space2], ..]
 
         """
@@ -135,7 +135,7 @@ class IrAnalyze:
             if self.sum_list[i] in self.fq_list[0]:
                 self.T1["pulse"].append(self.raw_data[i][0])
                 self.T1["space"].append(self.raw_data[i][1])
-        self.T1_ave = {"pulse": [], "space": []}
+        self.T1_ave = {"pulse": 0.0, "space": 0.0}
         # (pulse,spaceのTdの平均値を求めているが、pulseだけでも十分?)
         for key in ["pulse", "space"]:
             self.T1_ave[key] = sum(self.T1[key]) / len(self.T1[key])
@@ -315,7 +315,7 @@ class IrAnalyze:
 
                     self.sig_line1.append(sig)
                 else:
-                    self.sig_line1.append(IrConfig.HEADER_BIN + sig)
+                    self.sig_line1.append(self.HEADER_BIN + sig)
             else:
                 self.sig_line1.append(sig)
         self._log.debug("sig_line1=%s", self.sig_line1)
@@ -396,7 +396,7 @@ class IrAnalyze:
 
         if dev_list is None:
             if self.result is None:
-                self._log.waring("no result")
+                self._log.warning("no result")
                 return ""
 
             dev_list = [self.result]
@@ -406,7 +406,7 @@ class IrAnalyze:
             dev_list = [dev_list]
 
         if dev_list == []:
-            self._log.waring("no data")
+            self._log.warning("no data")
             return ""
 
         json_str = "[\n"

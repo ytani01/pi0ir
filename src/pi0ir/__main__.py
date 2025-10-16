@@ -8,6 +8,7 @@ import pigpio
 
 from . import __version__
 from .cmd_iranalyze import CmdIrAnalyze
+from .cmd_irrecv import CmdIrRecv
 from .utils.clickutils import click_common_opts
 from .utils.mylogger import errmsg, get_logger
 
@@ -77,11 +78,48 @@ def analyze(ctx, pin, verbose, debug):
     app = None
     try:
         pi = get_pi(debug)
-        print("AAA")
-        app = CmdIrAnalyze(pin, verbose=verbose, debug=debug)
-        print("BBB")
+        app = CmdIrAnalyze(pi, pin, verbose=verbose, debug=debug)
         app.main()
-        print("CCC")
+
+    except Exception as _e:
+        __log.error(errmsg(_e))
+
+    finally:
+        if app:
+            app.end()
+        if pi:
+            pi.stop()
+
+
+@cli.command()
+@click.option(
+    "--pin",
+    "-p",
+    type=int,
+    default=DEF_PIN,
+    show_default=True,
+    help="GPIO pin number",
+)
+@click.option(
+    "--verbose",
+    "-v",
+    is_flag=True,
+    default=False,
+    help="verbose mode",
+)
+@click_common_opts(__version__)
+def recv(ctx, pin, verbose, debug):
+    """IR signal receiver"""
+    __log = get_logger(__name__, debug)
+    __log.debug("cmd_name=%s", ctx.command.name)
+    __log.debug("pin=%s, verbose=%s", pin, verbose)
+
+    pi = None
+    app = None
+    try:
+        pi = get_pi(debug)
+        app = CmdIrRecv(pi, pin, verbose=verbose, debug=debug)
+        app.main()
 
     except Exception as _e:
         __log.error(errmsg(_e))
