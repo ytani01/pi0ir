@@ -18,10 +18,10 @@ class IrRecv:
     """
 
     DEF_GLITCH_USEC = 250  # usec
-    LEADER_MIN_USEC = 1000  # usec
+    LEADER_MIN_USEC = 300  # usec
 
     # INTERVAL_USEC_MAX = 999999  # tick == usec
-    INTERVAL_USEC_MAX = 200 * 1000  # tick == usec
+    INTERVAL_USEC_MAX = 500 * 1000  # tick == usec
     INTERVAL_MSEC_MAX = int(INTERVAL_USEC_MAX / 1000)
 
     WATCHDOG_MSEC = INTERVAL_MSEC_MAX / 2  # msec
@@ -186,7 +186,8 @@ class IrRecv:
             if self.raw_data == [] and interval_usec < self.LEADER_MIN_USEC:
                 self.set_watchdog(self.WATCHDOG_CANCEL)
                 self.__log.debug(
-                    "%d: leader is too short .. ignored", interval_usec
+                    "%d < %d: leader is too short .. ignored",
+                    interval_usec, self.LEADER_MIN_USEC
                 )
                 return
             else:
