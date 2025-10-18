@@ -1,22 +1,35 @@
 # pi0ir
 
-Python library for IR signal receiver and controller.
+IR remote control analysis Python library for Raspberry Pi.
+
+Raspberry Pi に
+安価な赤外線受信モジュールをつけるだけで、
+リモコンのコードを解析することができる。
 
 
 ## == 特徴
 
-- ``pigpio``を使った高速処理
 - 多様な信号方式を自動判別
   - AEHA (家電製品協会)
   - NEC
   - SONY
   - DYSON
   - BOSE
+- ``pigpio``を使った高速処理
 
 
 ## == 実行環境
 
+### === ハードウェア
+
 - Raspberry Pi: Zero,3,4系 (「pico」と「5」 は、非対称)
+- 赤外線リモコン受信モジュール -> [**== 参考**](#references)
+
+
+### === ソフトウェア
+
+- Raspberry Pi OS
+- pigpio
 - Python >= 3.11
 
 
@@ -71,10 +84,10 @@ uv run pi0ir analyze -p {ピン番号}
 [samples/](samples/) 以下のサンプルプログラム参照
 
 
-## == 参考
+## == 参考 <a id="references"></a>
 
 ### === 赤外線リモコン受信モジュール
 
-**例1** OSRB38C9AA
+**例** OSRB38C9AA
 
 ![赤外線リモコン受信モジュール](docs/OSRB38C9AA.png)
