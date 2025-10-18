@@ -6,19 +6,25 @@ Python library for IR signal receiver and controller.
 ## == 特徴
 
 - ``pigpio``を使った高速処理
-- 国内のリモコンで使用されいてる3つの方式に対応(NEC/家製協/SONY)
+- 国内のリモコンで使用されいてる3つの方式を自動識別(家製協/NEC/SONY)
 
 
 ## == 実行環境
 
-- Raspberry Pi: Zero..4B (pico,5 は、非対称)
+- Raspberry Pi: Zero,3,4系 (「pico」と「5」 は、非対称)
 - Python >= 3.11
 
 
 ## == インストール
 
 
+
 ## == 使用方法
+
+### === pigpiod
+
+
+### === pi0ir
 
 
 ## == 参考
