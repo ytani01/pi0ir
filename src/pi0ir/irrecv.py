@@ -18,16 +18,20 @@ class IrRecv:
     """
 
     DEF_GLITCH_USEC = 250  # usec
-    LEADER_MIN_USEC = 1000
+    LEADER_MIN_USEC = 1000  # usec
 
-    INTERVAL_MAX = 999999  # usec
+    # INTERVAL_USEC_MAX = 999999  # tick == usec
+    INTERVAL_USEC_MAX = 200 * 1000  # tick == usec
+    INTERVAL_MSEC_MAX = int(INTERVAL_USEC_MAX / 1000)
 
-    WATCHDOG_MSEC = INTERVAL_MAX / 1000 / 2  # msec
+    WATCHDOG_MSEC = INTERVAL_MSEC_MAX / 2  # msec
     WATCHDOG_CANCEL = 0
 
     VAL_ON = 0
-    VAL_OFF = 1
-    VAL_STR = ["pulse", "space", "timeout"]
+    VAL_OFF = 1 - VAL_ON
+
+    KEY_PULSE = "pulse"
+    KEY_SPACE = "space"
 
     MSG_END = ""
 
@@ -54,7 +58,7 @@ class IrRecv:
         self.glitch_usec = glitch_usec
         self.verbose = verbose
 
-        self.tick = 0
+        self.last_tick = 0
 
         self.pi.set_mode(self.pin, pigpio.INPUT)
         self.pi.set_glitch_filter(self.pin, self.glitch_usec)
@@ -84,7 +88,6 @@ class IrRecv:
 
         変化を検知すると、メッセージキューに格納し、
         最小限の処理にとどめて、ほとんどの処理はサブスレッドに任せる。
-
         """
         self.__log.debug("pin=%d, val=%d, tick=%d", pin, val, tick)
 
@@ -151,40 +154,45 @@ class IrRecv:
 
         [_, val, tick] = msg
 
-        interval = tick - self.tick
-        self.__log.debug("interval=%d", interval)
-        self.tick = tick
+        # interval_usecを求める
+        interval_usec = pigpio.tickDiff(self.last_tick, tick)
+        self.__log.debug("interval_usec=%d", interval_usec)
+        self.last_tick = tick
 
         if val == pigpio.TIMEOUT:
             self.__log.debug("timeout!")
             if len(self.raw_data) > 0:
                 if len(self.raw_data[-1]) == 1:
-                    self.raw_data[-1].append(interval)
+                    self.raw_data[-1].append(interval_usec)
             self.__log.debug("end")
             return
 
-        if interval > self.INTERVAL_MAX:
-            interval = self.INTERVAL_MAX
-            self.__log.debug("interval=%d", interval)
+        if interval_usec > self.INTERVAL_USEC_MAX:
+            interval_usec = self.INTERVAL_USEC_MAX
+            self.__log.debug("interval_usec=%d", interval_usec)
 
-        if val == IrRecv.VAL_ON:
+        if val == self.VAL_ON:
             # end of space
             if self.raw_data == []:
                 self.__log.debug("start raw_data")
                 return
             else:
-                self.raw_data[-1].append(interval)
+                #    [ [111, 222], [333] ]
+                # -> [ [111, 222], [333, interval_usec] ]
+                self.raw_data[-1].append(interval_usec)
 
-        else:  # val == IrRecv.VAL_OFF
+        else:  # val == self.VAL_OFF
             # end of pulse
-            if self.raw_data == [] and interval < self.LEADER_MIN_USEC:
+            if self.raw_data == [] and interval_usec < self.LEADER_MIN_USEC:
                 self.set_watchdog(self.WATCHDOG_CANCEL)
                 self.__log.debug(
-                    "%d: leader is too short .. ignored", interval
+                    "%d: leader is too short .. ignored", interval_usec
                 )
                 return
             else:
-                self.raw_data.append([interval])
+                #    [ [111, 222] ]
+                # -> [ [111, 222], [interval_ussec] ]
+                self.raw_data.append([interval_usec])
 
         self.__log.debug("raw_data=%s", self.raw_data)
 
@@ -204,6 +212,7 @@ class IrRecv:
         self.thr_worker = threading.Thread(target=self.worker, daemon=True)
         self.thr_worker.start()
 
+        # self.set_watchdog(self.WATCHDOG_MSEC)
         self.cb_recv = self.pi.callback(
             self.pin, pigpio.EITHER_EDGE, self.cb_func_recv
         )
@@ -211,10 +220,6 @@ class IrRecv:
         if self.verbose:
             print("Ready")
 
-        """
-        while self.receiving:
-            time.sleep(0.1)
-        """
         # スレッドが終了するまで待つ
         self.thr_worker.join()
         self.cb_recv.cancel()
@@ -266,10 +271,9 @@ class IrRecv:
             self.__log.debug("raw_data=%s", raw_data)
 
         pulse_space = ""
-
         for p, s in raw_data:
-            pulse_space += "%s %d\n" % (self.VAL_STR[0], p)
-            pulse_space += "%s %d\n" % (self.VAL_STR[1], s)
+            pulse_space += f"{self.KEY_PULSE} {p}\n"
+            pulse_space += f"{self.KEY_SPACE} {s}\n"
 
         return pulse_space
 
