@@ -25,4 +25,6 @@ Python library for IR signal receiver and controller.
 
 ### 赤外線リモコン受信モジュール
 
+**例1** OSRB38C9AA
+
 ![赤外線リモコン受信モジュール](docs/OSRB38C9AA.png)
