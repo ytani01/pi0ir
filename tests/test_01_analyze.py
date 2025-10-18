@@ -50,11 +50,14 @@ class TestAnalyze:
 
         return raw_data
 
-    @pytest.mark.parametrize("raw_data_file, e_format", [
-        ("raw_data-AEHA-1.txt", "AEHA"),
-        ("raw_data-NEC-1.txt", "NEC"),
-        ("raw_data-SONY-1.txt", "SONY"),
-    ])
+    @pytest.mark.parametrize(
+        "raw_data_file, e_format",
+        [
+            ("raw_data-AEHA-1.txt", "AEHA"),
+            ("raw_data-NEC-1.txt", "NEC"),
+            ("raw_data-SONY-1.txt", "SONY"),
+        ],
+    )
     def test_analyze1(self, analyzer, raw_data_file, e_format):
         """Test Analyze."""
         print("\n", raw_data_file, e_format)
