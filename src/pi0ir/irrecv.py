@@ -187,7 +187,8 @@ class IrRecv:
                 self.set_watchdog(self.WATCHDOG_CANCEL)
                 self.__log.debug(
                     "%d < %d: leader is too short .. ignored",
-                    interval_usec, self.LEADER_MIN_USEC
+                    interval_usec,
+                    self.LEADER_MIN_USEC,
                 )
                 return
             else:
