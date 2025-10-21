@@ -9,13 +9,16 @@ Raspberry Pi に
 
 ## == 特徴
 
-- 多様な信号方式を自動判別
+- ``pigpio``を使った高速処理
+
+- 多様な信号方式を自動判別して、信号を解析
   - AEHA (家電製品協会)
   - NEC
   - SONY
   - DYSON
   - BOSE
-- ``pigpio``を使った高速処理
+
+![](docs/demo1.png)
 
 
 ## == 実行環境
