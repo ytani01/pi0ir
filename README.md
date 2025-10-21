@@ -4,7 +4,7 @@ IR remote control analysis Python library for Raspberry Pi.
 
 Raspberry Pi に
 安価な赤外線受信モジュールをつけるだけで、
-リモコンのコードを解析することができる。
+リモコンのコードを解析することができます。
 
 
 ## == 特徴
@@ -91,6 +91,20 @@ uv run pi0ir analyze -p {ピン番号}
 
 ### === 赤外線リモコン受信モジュール
 
-**例** OSRB38C9AA
+#### ==== 例1 OSRB38C9AA
 
-![赤外線リモコン受信モジュール](docs/OSRB38C9AA.png)
+[秋月電子: 赤外線リモコン受信モジュールOSRB38C9AA](https://akizukidenshi.com/catalog/g/g104659/)
+
+とても安価です。
+
+単体で実験する際には、ノイズ対策しなくても動作しますが、
+いろいろと組み合わせて使う場合には、ノイズ対策が必須です。
+
+![OSRB38C9AA](docs/OSRB38C9AA.png)
+
+
+#### ==== 例2 モジュール基盤
+
+ノイズ対策がされていて、目視確認用のLEDもついているので、使い勝手がとてもいいです。
+
+[Amazon: IR赤外線センサー 送信機 + 受信機 キット](https://www.amazon.co.jp/dp/B09BCT5QXK)
